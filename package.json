@@ -1,0 +1,11 @@
+{
+  "name": "monitorio",
+  "version": "0.0.1",
+  "description": "Monitors multiple apps for downtime and latency, alerting development team when system is performing sub-optimally or is offline",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Wynn Drahorad",
+  "license": "MIT"
+}
