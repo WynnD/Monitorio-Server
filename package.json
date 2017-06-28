@@ -2,10 +2,10 @@
   "name": "monitorio",
   "version": "0.0.1",
   "description": "Monitors multiple apps for downtime and latency, alerting development team when system is performing sub-optimally or is offline",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "mocha",
-    "start": "nodemon index.js --exec babel-node --presets es2015,react,stage-3"
+    "start": "nodemon index.js"
   },
   "author": "Wynn Drahorad",
   "license": "MIT",
@@ -25,9 +25,13 @@
   },
   "dependencies": {
     "express": "^4.15.3",
+    "msnodesqlv8": "^0.2.17",
+    "mssql": "^4.0.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "request": "^2.81.0",
-    "xml2json": "^0.11.0"
+    "tedious": "github:antoinebrault/tedious#windows-integrated-auth",
+    "xml-js": "^1.3.2",
+    "xml2js": "^0.4.17"
   }
 }

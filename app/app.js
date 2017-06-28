@@ -1,7 +1,18 @@
-const apiReq = require('./api_request');
-const express = require('express');
-const app = express();
+const AppMonitor = require('./api_req_class').AppMonitor;
+let urlList = [
+  // 'https://nursing.vizientinc.com/nrp-dashboard/api/monitor',
+  // 'http://ews.uhc.edu/EWS2014/EWSMonitorService.svc/RunTests/test',
+  // 'https://www.facultypractice.org/FPSCAppMonitor/api/AppMonitor/',
+  'http://ews.uhc.edu/ews2012soap/ewsmonitor.asmx/RunTests?caller=monitoringAppName'
+];
 
+let appMonitor = new AppMonitor(urlList);
+
+let loop = appMonitor.loop.bind(appMonitor);
+
+setInterval(loop, 5000);
+
+/*
 var jsonString = apiReq.getJsonFromRequest(null);
 var object = apiReq.tryParseJsonString(jsonString);
 console.log(object);
@@ -13,3 +24,4 @@ app.get('/', function(req, res) {
 app.listen(3000, function() {
   console.log('listening on port 3000');
 });
+*/
