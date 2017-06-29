@@ -212,8 +212,7 @@ exports.AppMonitor = class {
   getAppVitals(url) {
     let getResponseObject = this.getResponseObject.bind(this);
     let formatAppVitals = this.formatAppVitals.bind(this);
-    let logVitalsInDb = this.logVitalsInDb.bind(this);
-    let logDependencyVitalsInDb = this.logDependencyVitalsInDb.bind(this);
+    let logAppAndDepVitalsInDb = this.logAppAndDepVitalsInDb.bind(this);
     request(url, function(error, response, body) {
       if (error) {
         console.log(error);
@@ -222,9 +221,7 @@ exports.AppMonitor = class {
       try {
         let responseObject = getResponseObject(body);
         let appVitals = formatAppVitals(responseObject, url);
-        console.log(appVitals.dependencies);
-        logVitalsInDb(appVitals);
-        logDependencyVitalsInDb(appVitals);
+        logAppAndDepVitalsInDb(appVitals);
       } catch (error) {
         console.error(error);
       }
@@ -321,7 +318,7 @@ exports.AppMonitor = class {
     });
   }
 
-  logVitalsInDb(appVitals) {
+  logAppAndDepVitalsInDb(appVitals) {
     const config = {
       user: '',
       password: '',
@@ -367,6 +364,7 @@ exports.AppMonitor = class {
     });
 
     // console.log(appVitals.dependencies);
+    console.log('\n');
     appVitals.dependencies.forEach(dep => {
       console.log(dep);
       this.logDependencyVitalsInDb(appVitals, dep);
@@ -386,6 +384,8 @@ exports.AppMonitor = class {
       }
     };
 
+    console.log(dependency);
+
     const pool = new mssql.ConnectionPool(config, err => {
       if (err) {
         console.log(err);
@@ -393,7 +393,6 @@ exports.AppMonitor = class {
       }
 
       const sqlReq = new mssql.Request(pool);
-      console.log(dependency);
       sqlReq.input('api_url', mssql.NVarChar(1000), appVitals.api_url);
       sqlReq.input('dep_name', mssql.NVarChar(50), dependency.name);
       sqlReq.input('result', mssql.TinyInt, dependency.result);
