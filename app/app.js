@@ -8,9 +8,9 @@ let urlList = [
 
 let appMonitor = new AppMonitor(urlList);
 
-let loop = appMonitor.loop.bind(appMonitor);
+let monitor = appMonitor.monitor.bind(appMonitor);
 
-setInterval(loop, 5000);
+setInterval(monitor, 5000);
 
 /*
 var jsonString = apiReq.getJsonFromRequest(null);
