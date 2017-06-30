@@ -59,6 +59,7 @@ let parser = {
       error_desc: responseObject.MonitorResult.ContextData === undefined
         ? ''
         : responseObject.MonitorResult.ContextData,
+      notify_email: incompleteApp.notify_email,
       dependencies: dependenciesList
     };
     return x;

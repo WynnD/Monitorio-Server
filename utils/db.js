@@ -87,6 +87,7 @@ let dbClient = {
   },
 
   logAppAndDepVitals(app) {
+    console.log(app);
     const pool = new mssql.ConnectionPool(config, err => {
       if (err) {
         console.log(err);
@@ -119,7 +120,7 @@ let dbClient = {
         });
     });
 
-    console.log('\n');
+    console.log(app);
     app.dependencies.forEach(dep => {
       this.logDependencyVitals(app, dep);
     });
@@ -133,7 +134,8 @@ let dbClient = {
       }
 
       const sqlReq = new mssql.Request(pool);
-
+      console.log(dependency);
+      console.log(app);
       sqlReq.input('api_url', mssql.NVarChar(1000), app.api_url);
       sqlReq.input('dep_name', mssql.NVarChar(50), dependency.name);
       sqlReq.input('result', mssql.TinyInt, dependency.result);

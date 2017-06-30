@@ -73,7 +73,13 @@ class AppMonitor {
       .getApiResponse(url)
       .then(result => {
         let responseObject = parser.getResponseObject(result);
-        let appVitals = parser.getFormattedAppFromResponse(responseObject, url);
+        let newApp = {
+          api_url: url
+        };
+        let appVitals = parser.getFormattedAppFromResponse(
+          responseObject,
+          newApp
+        );
         db.logAppAndDepVitals(appVitals);
       })
       .catch(err => {

@@ -1,4 +1,4 @@
-const AppMonitor = require('./api_req_class').AppMonitor;
+const AppMonitor = require('./utils/app_monitor').AppMonitor;
 let urlList = [
   // 'https://nursing.vizientinc.com/nrp-dashboard/api/monitor',
   // 'http://ews.uhc.edu/EWS2014/EWSMonitorService.svc/RunTests/test',
