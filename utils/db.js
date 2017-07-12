@@ -29,7 +29,7 @@ let dbClient = {
 
         sqlReq
           .execute('dbo.SP_Add_Application')
-          .then(result => {
+          .then(() => {
             console.log('Adding application', app.app_name, 'successful');
             pool.close();
             resolve();
@@ -59,7 +59,7 @@ let dbClient = {
 
         sqlReq
           .execute('dbo.SP_Add_Dependency')
-          .then(result => {
+          .then(() => {
             console.log(
               'Successfully added dependency',
               dependency.name,
@@ -87,7 +87,6 @@ let dbClient = {
   },
 
   logAppAndDepVitals(app) {
-    console.log(app);
     const pool = new mssql.ConnectionPool(config, err => {
       if (err) {
         console.log(err);
@@ -105,7 +104,7 @@ let dbClient = {
 
       sqlReq
         .execute('dbo.SP_Add_Application_Log')
-        .then(result => {
+        .then(() => {
           console.log(
             'Successfully added log for application',
             app.product_name,
@@ -120,7 +119,6 @@ let dbClient = {
         });
     });
 
-    console.log(app);
     app.dependencies.forEach(dep => {
       this.logDependencyVitals(app, dep);
     });
@@ -134,8 +132,7 @@ let dbClient = {
       }
 
       const sqlReq = new mssql.Request(pool);
-      console.log(dependency);
-      console.log(app);
+
       sqlReq.input('api_url', mssql.NVarChar(1000), app.api_url);
       sqlReq.input('dep_name', mssql.NVarChar(50), dependency.name);
       sqlReq.input('result', mssql.TinyInt, dependency.result);
@@ -145,7 +142,7 @@ let dbClient = {
 
       sqlReq
         .execute('dbo.SP_Add_Dependency_Log')
-        .then(result => {
+        .then(() => {
           console.log(
             'Successfully added log for dependency',
             dependency.name,
@@ -192,34 +189,7 @@ let dbClient = {
       });
     });
   },
-  /*
-  initDb() {
-    const pool = new mssql.ConnectionPool(config, err => {
-      if (err) {
-        console.log(err);
-        console.trace();
-        return;
-      }
 
-      const sqlReq = new mssql.Request(pool);
-
-      return sqlReq
-        .execute('dbo.SP_Tables_Do_Exist')
-        .then(result => {
-          if (result.returnValue === 1) {
-            console.log('Tables already exist. Dropping them now...');
-            pool.close();
-            dbClient.wipeDb(true);
-          } else {
-            dbClient.buildDb();
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
-  },
-*/
   buildDb() {
     return new Promise((resolve, reject) => {
       const pool = new mssql.ConnectionPool(config, err => {
@@ -233,7 +203,7 @@ let dbClient = {
 
         return sqlReq
           .execute('dbo.SP_Create_Tables')
-          .then(result => {
+          .then(() => {
             console.log('Successfully created tables');
             pool.close();
             resolve();
@@ -260,7 +230,7 @@ let dbClient = {
 
         return sqlReq
           .execute('dbo.SP_Drop_Tables')
-          .then(result => {
+          .then(() => {
             console.log('Successfully scrubbed db');
             pool.close();
             if (rebuild) {
