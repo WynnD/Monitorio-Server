@@ -7,7 +7,9 @@ let parser = {
       if (o && typeof o === 'object') {
         return o;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
 
     return false;
   },
@@ -50,15 +52,15 @@ let parser = {
       product_name: responseObject.MonitorResult.ProductName,
       product_id: responseObject.MonitorResult.ProductID,
       result: responseObject.MonitorResult.OverallResult === 'true' ? 1 : 0,
-      result_f5: responseObject.MonitorResult.ResultForF5Monitor === 'true'
-        ? 1
-        : 0,
+      result_f5:
+        responseObject.MonitorResult.ResultForF5Monitor === 'true' ? 1 : 0,
       api_url: incompleteApp.api_url,
       host_name: responseObject.MonitorResult.HostName,
       ping_ms: (responseObject.MonitorResult.TimeTakenSecs * 1000.0).toFixed(0),
-      error_desc: responseObject.MonitorResult.ContextData === undefined
-        ? ''
-        : responseObject.MonitorResult.ContextData,
+      error_desc:
+        responseObject.MonitorResult.ContextData === undefined
+          ? ''
+          : responseObject.MonitorResult.ContextData,
       notify_email: incompleteApp.notify_email,
       dependencies: dependenciesList
     };
@@ -95,7 +97,12 @@ let parser = {
       dependencies.push(dependencyObject);
     }
     return dependencies;
-  }
+  },
+
+  // TODO parseAppListResponse() will take the result from SQL and format it
+  //      to be sent to react
+
+  parseAppListResponse(result) {}
 };
 
 exports.parser = parser;

@@ -166,6 +166,7 @@ let dbClient = {
         if (err) {
           console.log(err);
           console.trace();
+          reject(err);
           return;
         }
 
@@ -196,6 +197,7 @@ let dbClient = {
         if (err) {
           console.log(err);
           console.trace();
+          reject(err);
           return;
         }
 
@@ -223,6 +225,7 @@ let dbClient = {
         if (err) {
           console.log(err);
           console.trace();
+          reject(err);
           return;
         }
 
@@ -254,12 +257,36 @@ let dbClient = {
         if (err) {
           console.log(err);
           console.trace();
+          reject(err);
           return;
         }
         const sqlReq = new mssql.Request(pool);
 
         return sqlReq
           .execute('dbo.SP_Select_All_URLs')
+          .then(result => {
+            resolve(result);
+            pool.close();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    });
+  },
+
+  getAllApps() {
+    return new Promise((resolve, reject) => {
+      const pool = new mssql.ConnectionPool(config, err => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+
+        const sqlReq = new mssql.Request(pool);
+
+        return sqlReq
+          .execute('dbo.SP_Select_All_Applications')
           .then(result => {
             resolve(result);
             pool.close();

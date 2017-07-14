@@ -1,3 +1,5 @@
+const app = require('express');
+
 const AppMonitor = require('./utils/app_monitor').AppMonitor;
 let urlList = [
   // 'https://nursing.vizientinc.com/nrp-dashboard/api/monitor',
@@ -12,16 +14,10 @@ let monitor = appMonitor.monitor.bind(appMonitor);
 
 setInterval(monitor, 5000);
 
-/*
-var jsonString = apiReq.getJsonFromRequest(null);
-var object = apiReq.tryParseJsonString(jsonString);
-console.log(object);
-
-app.get('/', function(req, res) {
-  res.send('I want to check on your credentials...');
+app.get('/getApps', function(req, res) {
+  res.send(appList);
 });
 
-app.listen(3000, function() {
+app.listen(2000, function() {
   console.log('listening on port 3000');
 });
-*/
