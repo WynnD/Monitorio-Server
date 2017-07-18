@@ -8,7 +8,7 @@ let parser = {
         return o;
       }
     } catch (e) {
-      console.log(e);
+      console.log('error parsing JSON, might be XML file');
     }
 
     return false;
@@ -77,6 +77,7 @@ let parser = {
     testResults = testResults.TestResult;
 
     if (Array.isArray(testResults)) {
+      console.log(testResults);
       testResults.forEach(function(testResult) {
         let dependencyObject = {};
         dependencyObject.name = testResult.Name;
@@ -102,7 +103,16 @@ let parser = {
   // TODO parseAppListResponse() will take the result from SQL and format it
   //      to be sent to react
 
-  parseAppListResponse(result) {}
+  parseAppListResponse(result) {
+    const apps = result.recordsets[0];
+    apps.forEach(app => {
+      let email_list = app.notify_email.split(';');
+      app.notify_emails = email_list.filter(string => {
+        return string != '';
+      });
+    });
+    return apps;
+  }
 };
 
 exports.parser = parser;

@@ -296,6 +296,29 @@ let dbClient = {
           });
       });
     });
+  },
+
+  deleteApp(id) {
+    return new Promise((resolve, reject) => {
+      const pool = new mssql.ConnectionPool(config, err => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+
+        const sqlReq = new mssql.Request(pool);
+        sqlReq.input('app_id', mssql.Int, id);
+        return sqlReq
+          .execute('dbo.SP_Delete_Application')
+          .then(result => {
+            resolve(result);
+            pool.close();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    });
   }
 };
 

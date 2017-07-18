@@ -86,6 +86,30 @@ class AppMonitor {
         console.log(err);
       });
   }
+
+  sendAppList(response) {
+    db
+      .getAllApps()
+      .then(result => {
+        let apps = parser.parseAppListResponse(result);
+        response.json(apps);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  deleteApp(id, response) {
+    db
+      .deleteApp(id)
+      .then(() => {
+        response.sendStatus(200);
+      })
+      .catch(err => {
+        console.log(err);
+        response.sendStatus(400);
+      });
+  }
 }
 
 exports.AppMonitor = AppMonitor;
