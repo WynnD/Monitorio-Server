@@ -275,6 +275,30 @@ let dbClient = {
     });
   },
 
+  getAllAppsWithCurrentStatus() {
+    return new Promise((resolve, reject) => {
+      const pool = new mssql.ConnectionPool(config, err => {
+        if (err) {
+          console.log(err);
+          console.trace();
+          reject(err);
+          return;
+        }
+        const sqlReq = new mssql.Request(pool);
+
+        return sqlReq
+          .execute('dbo.SP_Select_All_Applications_With_Status')
+          .then(result => {
+            resolve(result);
+            pool.close();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    });
+  },
+
   getAllApps() {
     return new Promise((resolve, reject) => {
       const pool = new mssql.ConnectionPool(config, err => {
@@ -310,6 +334,30 @@ let dbClient = {
         sqlReq.input('app_id', mssql.Int, id);
         return sqlReq
           .execute('dbo.SP_Delete_Application')
+          .then(result => {
+            resolve(result);
+            pool.close();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    });
+  },
+
+  toggleApplication(id) {
+    return new Promise((resolve, reject) => {
+      const pool = new mssql.ConnectionPool(config, err => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+
+        const sqlReq = new mssql.Request(pool);
+        sqlReq.input('app_id', mssql.Int, id);
+        // TODO add SP_Toggle_Application procedure in MS SQL
+        return sqlReq
+          .execute('dbo.SP_Toggle_Application')
           .then(result => {
             resolve(result);
             pool.close();

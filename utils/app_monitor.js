@@ -36,7 +36,7 @@ class AppMonitor {
         result.recordset.forEach(function(row) {
           urlList.push(row.api_url);
         });
-        urlList.forEach(this.getAppVitals);
+        urlList.forEach(this.logAppVitals);
       })
       .catch(err => {
         console.log(err);
@@ -45,7 +45,7 @@ class AppMonitor {
     this.urlList = urlList;
   }
 
-  addMonitoredApplication(newIncompleteApp) {
+  addMonitoredApplication(newIncompleteApp, response) {
     network
       .getApiResponse(newIncompleteApp.api_url)
       .then(result => {
@@ -58,17 +58,26 @@ class AppMonitor {
           .addApp(newCompleteApp)
           .then(() => {
             db.addDeps(newCompleteApp);
+            if (response) {
+              response.sendStatus(200);
+            }
           })
           .catch(err => {
             console.error(err);
+            if (response) {
+              response.status(400).send(err);
+            }
           });
       })
       .catch(err => {
         console.error(err);
+        if (response) {
+          response.status(400).send(err);
+        }
       });
   }
 
-  getAppVitals(url) {
+  logAppVitals(url) {
     network
       .getApiResponse(url)
       .then(result => {
@@ -89,7 +98,7 @@ class AppMonitor {
 
   sendAppList(response) {
     db
-      .getAllApps()
+      .getAllAppsWithCurrentStatus()
       .then(result => {
         let apps = parser.parseAppListResponse(result);
         response.json(apps);
@@ -107,7 +116,33 @@ class AppMonitor {
       })
       .catch(err => {
         console.log(err);
-        response.sendStatus(400);
+        response.status(400).send(err);
+      });
+  }
+
+  sendCurrentVitals(response) {
+    db
+      .getAllNewestAppVitals()
+      .then(result => {
+        console.log(result);
+        response.status(200).send(result);
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(400).send(err);
+      });
+  }
+
+  toggleApplication(id, response) {
+    db
+      .toggleApplication(id)
+      .then(result => {
+        console.log(result);
+        response.status(200).send(result);
+      })
+      .catch(err => {
+        console.log(err);
+        response.status(400).send(err);
       });
   }
 }

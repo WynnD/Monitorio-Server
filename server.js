@@ -1,5 +1,8 @@
 const app = require('express')();
 const AppMonitor = require('./utils/app_monitor').AppMonitor;
+const bodyParser = require('body-parser');
+
+const refreshRate = 5000;
 
 let urlList = [
   'https://nursing.vizientinc.com/nrp-dashboard/api/monitor',
@@ -8,33 +11,56 @@ let urlList = [
   'http://ews.uhc.edu/ews2012soap/ewsmonitor.asmx/RunTests?caller=monitoringAppName'
 ];
 
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+
 let appMonitor = new AppMonitor(urlList);
 
 let monitor = appMonitor.monitor.bind(appMonitor);
 
-setInterval(monitor, 5000);
+setInterval(monitor, refreshRate);
 
-app.all('/*', function(req, res, next) {
+app.all('/*', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
 
-app.get('/get-apps', function(req, res) {
+app.get('/get-apps', (req, res) => {
   appMonitor.sendAppList(res);
 });
 
-app.get('/delete-app', function(req, res) {
+app.get('/delete-app', (req, res) => {
   const app_id = parseInt(req.query.id, 10);
   console.log('Received request to delete app with id', app_id);
   appMonitor.deleteApp(app_id, res);
 });
 
-app.post('/add-app', function(req, res) {
-  console.log(req.body);
-  res.send(req.body);
+app.get('/refresh-rate', (req, res) => {
+  res.send({ refreshRate }).status(200);
 });
 
-app.listen(2000, function() {
+app.get('/current-vitals', (req, res) => {
+  appMonitor.sendCurrentVitals(res);
+});
+
+app.post('/toggle', (req, res) => {
+  const appId = req.body.id;
+  console.log('Recieved request to add app with id', appId);
+  appMonitor.toggleApplication(appId, res);
+});
+
+app.post('/add-app', (req, res) => {
+  const appInfo = req.body;
+  console.log('Recieved request to add app with info', appInfo);
+  appMonitor.addMonitoredApplication(appInfo, res);
+});
+
+app.listen(2000, () => {
   console.log('listening on port 2000');
 });
