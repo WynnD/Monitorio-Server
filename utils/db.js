@@ -251,7 +251,7 @@ let dbClient = {
     });
   },
 
-  getAllAppUrls() {
+  getAllEnabledAppUrls() {
     return new Promise((resolve, reject) => {
       const pool = new mssql.ConnectionPool(config, err => {
         if (err) {
@@ -263,7 +263,7 @@ let dbClient = {
         const sqlReq = new mssql.Request(pool);
 
         return sqlReq
-          .execute('dbo.SP_Select_All_URLs')
+          .execute('dbo.SP_Select_All_Enabled_URLs')
           .then(result => {
             resolve(result);
             pool.close();
@@ -355,9 +355,9 @@ let dbClient = {
 
         const sqlReq = new mssql.Request(pool);
         sqlReq.input('app_id', mssql.Int, id);
-        // TODO add SP_Toggle_Application procedure in MS SQL
+        // TODO: add SP_Toggle_Application_Active procedure in MS SQL
         return sqlReq
-          .execute('dbo.SP_Toggle_Application')
+          .execute('dbo.SP_Toggle_Application_Active')
           .then(result => {
             resolve(result);
             pool.close();

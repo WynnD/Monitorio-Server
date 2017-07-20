@@ -51,7 +51,7 @@ app.get('/current-vitals', (req, res) => {
 
 app.post('/toggle', (req, res) => {
   const appId = req.body.id;
-  console.log('Recieved request to add app with id', appId);
+  console.log('Recieved request to toggle app with id', appId);
   appMonitor.toggleApplication(appId, res);
 });
 

@@ -31,7 +31,7 @@ class AppMonitor {
   monitor() {
     let urlList = [];
     db
-      .getAllAppUrls()
+      .getAllEnabledAppUrls()
       .then(result => {
         result.recordset.forEach(function(row) {
           urlList.push(row.api_url);
