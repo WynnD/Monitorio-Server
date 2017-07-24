@@ -355,7 +355,6 @@ let dbClient = {
 
         const sqlReq = new mssql.Request(pool);
         sqlReq.input('app_id', mssql.Int, id);
-        // TODO: add SP_Toggle_Application_Active procedure in MS SQL
         return sqlReq
           .execute('dbo.SP_Toggle_Application_Active')
           .then(result => {

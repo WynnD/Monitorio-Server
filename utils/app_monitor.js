@@ -1,6 +1,7 @@
 const parser = require('./parser').parser;
-const db = require('./db').dbClient;
+const db = require('./dbClient').dbClient;
 const network = require('./network').network_layer;
+// const emailAlerter = require('./emailAlerter').emailAlerter;
 
 class AppMonitor {
   constructor(initialUrlList) {
@@ -13,6 +14,7 @@ class AppMonitor {
       .catch(err => {
         console.log(err);
       });
+    // emailAlerter.verifyConnectionConfig();
   }
 
   addAppsForTest(urlList) {
@@ -21,7 +23,7 @@ class AppMonitor {
       let newApp = {
         app_name: 'AppNameGoesHere' + index,
         api_url: url,
-        notify_email: 'wynnd5595@gmail.com;'
+        notify_email: 'wynnd5595@gmail.com,'
       };
       this.addMonitoredApplication(newApp);
       index++;

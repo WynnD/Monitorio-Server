@@ -106,7 +106,7 @@ let parser = {
   parseAppListResponse(result) {
     const apps = result.recordsets[0];
     apps.forEach(app => {
-      let email_list = app.notify_email.split(';');
+      let email_list = app.notify_email.split(',');
       app.notify_emails = email_list.filter(string => {
         return string != '';
       });
