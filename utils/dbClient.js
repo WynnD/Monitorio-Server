@@ -1,4 +1,6 @@
 const mssql = require('mssql/msnodesqlv8');
+const dateHeader = require('./parser').parser.getDateHeader;
+
 const config = {
   user: '',
   password: '',
@@ -20,7 +22,6 @@ let dbClient = {
         }
 
         const sqlReq = new mssql.Request(pool);
-        console.log(app);
         sqlReq.input('app_name', mssql.NVarChar(50), app.app_name);
         sqlReq.input('product_id', mssql.Int, app.product_id);
         sqlReq.input('product_name', mssql.NVarChar(50), app.product_name);
@@ -30,7 +31,7 @@ let dbClient = {
         sqlReq
           .execute('dbo.SP_Add_Application')
           .then(() => {
-            console.log('Adding application', app.app_name, 'successful');
+            console.log(dateHeader(), 'Adding application', app.app_name, 'successful');
             pool.close();
             resolve();
           })
@@ -60,7 +61,7 @@ let dbClient = {
         sqlReq
           .execute('dbo.SP_Add_Dependency')
           .then(() => {
-            console.log(
+            console.log(dateHeader(),
               'Successfully added dependency',
               dependency.name,
               'for application',
@@ -106,6 +107,7 @@ let dbClient = {
         .execute('dbo.SP_Add_Application_Log')
         .then(() => {
           console.log(
+            dateHeader(),
             'Successfully added log for application',
             app.product_name,
             'to Application_Logs table',
@@ -144,7 +146,8 @@ let dbClient = {
         .execute('dbo.SP_Add_Dependency_Log')
         .then(() => {
           console.log(
-            'Successfully added log for dependency',
+            dateHeader(),
+            'Successfully added status log for dependency',
             dependency.name,
             'for application',
             app.product_name,
@@ -176,7 +179,7 @@ let dbClient = {
           .execute('dbo.SP_Tables_Do_Exist')
           .then(result => {
             if (result.returnValue === 1) {
-              console.log('Tables already exist. Dropping them now...');
+              console.log(dateHeader(), 'Tables already exist. Dropping them now...');
               pool.close();
               return dbClient.wipeDb(true).then(resolve).catch(reject);
             } else {
@@ -206,7 +209,7 @@ let dbClient = {
         return sqlReq
           .execute('dbo.SP_Create_Tables')
           .then(() => {
-            console.log('Successfully created tables');
+            console.log(dateHeader(), 'Successfully created tables');
             pool.close();
             resolve();
           })
@@ -234,7 +237,7 @@ let dbClient = {
         return sqlReq
           .execute('dbo.SP_Drop_Tables')
           .then(() => {
-            console.log('Successfully scrubbed db');
+            console.log(dateHeader(), 'Successfully scrubbed db');
             pool.close();
             if (rebuild) {
               dbClient.buildDb().then(resolve).catch(reject);

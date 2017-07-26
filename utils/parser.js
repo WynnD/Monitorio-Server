@@ -1,4 +1,5 @@
 const parseString = require('xml2js').parseString;
+const format = require('util').format;
 
 let parser = {
   tryParseJsonString(jsonString) {
@@ -7,20 +8,16 @@ let parser = {
       if (o && typeof o === 'object') {
         return o;
       }
-    } catch (e) {
-      console.log('error parsing JSON, might be XML file');
-    }
-
-    return false;
+    } catch (e) { return false; }
   },
 
   getResponseObject(response) {
     let responseObject = {};
     responseObject.MonitorResult = parser.tryParseJsonString(response);
     if (responseObject.MonitorResult) {
-      console.log('response is in JSON format');
+      console.log(parser.getDateHeader(), 'response is in JSON format: Parsing...\n');
     } else {
-      console.log('response is in XML format: Converting to JSON');
+      console.log(parser.getDateHeader(), 'response is in XML format: Parsing...\n');
       parseString(
         response,
         { mergeAttrs: true, explicitArray: false },
@@ -70,38 +67,35 @@ let parser = {
   getDependenciesList(testResults) {
     let dependencies = [];
 
-    if (testResults === undefined) {
+    if (testResults === undefined /*
+        || testResults.testResult === undefined */) {
       return dependencies;
     }
 
     testResults = testResults.TestResult;
 
     if (Array.isArray(testResults)) {
-      console.log(testResults);
       testResults.forEach(function(testResult) {
-        let dependencyObject = {};
-        dependencyObject.name = testResult.Name;
-        dependencyObject.result = testResult.Result === 'true' ? 1 : 0;
-        dependencyObject.ping_ms = (testResult.TimeTakenSecs * 1000.0).toFixed(
-          0
-        );
-        dependencies.push(dependencyObject);
+        let dependencyObject = {
+        name: testResult.Name,
+        result: testResult.Result === 'true' ? 1 : 0,
+        ping_ms: (testResult.TimeTakenSecs * 1000.0).toFixed(
+        0
+      )};
+      dependencies.push(dependencyObject);
       });
     } else {
       dependencies = [];
-      let dependencyObject = {};
-      dependencyObject.name = testResults.Name;
-      dependencyObject.result = testResults.Result === 'true' ? 1 : 0;
-      dependencyObject.ping_ms = (testResults.TimeTakenSecs * 1000.0).toFixed(
+      let dependencyObject = {
+        name: testResults.Name,
+        result: testResults.Result === 'true' ? 1 : 0,
+        ping_ms: (testResults.TimeTakenSecs * 1000.0).toFixed(
         0
-      );
+      )};
       dependencies.push(dependencyObject);
     }
     return dependencies;
   },
-
-  // TODO parseAppListResponse() will take the result from SQL and format it
-  //      to be sent to react
 
   parseAppListResponse(result) {
     const apps = result.recordsets[0];
@@ -112,6 +106,15 @@ let parser = {
       });
     });
     return apps;
+  },
+
+  getDateStringFromDate(date) {
+
+  },
+
+  getDateHeader() {
+    return format('%s:',
+              new Date().toLocaleString());
   }
 };
 

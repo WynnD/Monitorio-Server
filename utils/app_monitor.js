@@ -1,27 +1,28 @@
 const parser = require('./parser').parser;
 const db = require('./dbClient').dbClient;
 const network = require('./network').network_layer;
-// const emailAlerter = require('./emailAlerter').emailAlerter;
+const emailAlerter = require('./emailAlerter').emailAlerter;
+const dateHeader = require('./parser').parser.getDateHeader;
 
 class AppMonitor {
   constructor(initialUrlList) {
     db
       .initDb()
       .then(() => {
-        console.log('Finished initializing db');
+        console.log(dateHeader(), 'Finished initializing db');
         this.addAppsForTest(initialUrlList);
       })
       .catch(err => {
         console.log(err);
       });
-    // emailAlerter.verifyConnectionConfig();
+    emailAlerter.verifyConnectionConfig();
   }
 
   addAppsForTest(urlList) {
     let index = 0;
     urlList.forEach(url => {
       let newApp = {
-        app_name: 'AppNameGoesHere' + index,
+        app_name: 'App' + index,
         api_url: url,
         notify_email: 'wynnd5595@gmail.com,'
       };
@@ -139,7 +140,7 @@ class AppMonitor {
     db
       .toggleApplication(id)
       .then(result => {
-        console.log(result);
+        // console.log(result);
         response.status(200).send(result);
       })
       .catch(err => {
