@@ -179,9 +179,12 @@ let dbClient = {
           .execute('dbo.SP_Tables_Do_Exist')
           .then(result => {
             if (result.returnValue === 1) {
-              console.log(dateHeader(), 'Tables already exist. Dropping them now...');
+              console.log(dateHeader(), 'Tables already exist.');
               pool.close();
-              return dbClient.wipeDb(true).then(resolve).catch(reject);
+
+              // uncomment this line if you wish for the app to wipe db on launch (used for testing)
+              // return dbClient.wipeDb(true).then(resolve).catch(reject);
+              resolve();
             } else {
               return dbClient.buildDb().then(resolve).catch(reject);
             }
@@ -232,12 +235,14 @@ let dbClient = {
           return;
         }
 
+        console.log(dateHeader(), 'Attempting to scrub database');
+
         const sqlReq = new mssql.Request(pool);
 
         return sqlReq
           .execute('dbo.SP_Drop_Tables')
           .then(() => {
-            console.log(dateHeader(), 'Successfully scrubbed db');
+            console.log(dateHeader(), 'Successfully scrubbed database');
             pool.close();
             if (rebuild) {
               dbClient.buildDb().then(resolve).catch(reject);

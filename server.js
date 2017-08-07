@@ -1,15 +1,6 @@
 const app = require('express')();
-const AppMonitor = require('./utils/app_monitor').AppMonitor;
+const AppMonitor = require('./utils/appMonitor').AppMonitor;
 const bodyParser = require('body-parser');
-
-const refreshRate = 5000;
-
-let urlList = [
-  'https://nursing.vizientinc.com/nrp-dashboard/api/monitor',
-  'http://ews.uhc.edu/EWS2014/EWSMonitorService.svc/RunTests/test',
-  'https://www.facultypractice.org/FPSCAppMonitor/api/AppMonitor/',
-  'http://ews.uhc.edu/ews2012soap/ewsmonitor.asmx/RunTests?caller=monitoringAppName'
-];
 
 app.use(bodyParser.json());
 app.use(
@@ -17,6 +8,15 @@ app.use(
     extended: true
   })
 );
+
+const refreshRate = 5000;
+
+let urlList = [/*
+  'https://nursing.vizientinc.com/nrp-dashboard/api/monitor',
+  'http://ews.uhc.edu/EWS2014/EWSMonitorService.svc/RunTests/test', */
+  'https://www.facultypractice.org/FPSCAppMonitor/api/AppMonitor/',
+  'http://ews.uhc.edu/ews2012soap/ewsmonitor.asmx/RunTests?caller=monitoringAppName'
+];
 
 let appMonitor = new AppMonitor(urlList);
 

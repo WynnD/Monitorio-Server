@@ -15,7 +15,7 @@ class AppMonitor {
       .catch(err => {
         console.log(err);
       });
-    emailAlerter.verifyConnectionConfig();
+    // emailAlerter.verifyConnectionConfig();
   }
 
   addAppsForTest(urlList) {
@@ -33,6 +33,7 @@ class AppMonitor {
 
   monitor() {
     let urlList = [];
+    console.log(dateHeader(), 'checking status of all applications...');
     db
       .getAllEnabledAppUrls()
       .then(result => {
